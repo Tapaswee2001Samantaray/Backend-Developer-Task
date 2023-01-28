@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-
-
 const employeeSchema = new mongoose.Schema(
     {
         name : {
@@ -32,8 +30,6 @@ const employeeSchema = new mongoose.Schema(
             default : false
         }
     }
-)
+);
 
-
-
-module.exports = mongoose.model("EmployeeData" , employeeSchema)
+module.exports = mongoose.model("EmployeeData" , employeeSchema);

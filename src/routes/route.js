@@ -7,6 +7,4 @@ router.post("/",courseController)
 router.get("/",employeeController)
 
 
-
-
 module.exports = router
