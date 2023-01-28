@@ -4,16 +4,25 @@
   "description": "Backend Developer Task",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Tapaswee2001Samantaray/Backend-Developer-Task.git"
   },
-  "author": "",
+  "author": "Sagar Maan , Tapaswee Samantaray , Ashanur Hossain , Soumya Ranjan Pradhan",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Tapaswee2001Samantaray/Backend-Developer-Task/issues"
   },
-  "homepage": "https://github.com/Tapaswee2001Samantaray/Backend-Developer-Task#readme"
+  "homepage": "https://github.com/Tapaswee2001Samantaray/Backend-Developer-Task#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
+    "mongoose": "^6.9.0",
+    "nodemon": "^2.0.20"
+  }
 }
