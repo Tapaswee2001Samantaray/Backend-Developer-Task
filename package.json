@@ -1,0 +1,19 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "Backend Developer Task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tapaswee2001Samantaray/Backend-Developer-Task.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tapaswee2001Samantaray/Backend-Developer-Task/issues"
+  },
+  "homepage": "https://github.com/Tapaswee2001Samantaray/Backend-Developer-Task#readme"
+}
