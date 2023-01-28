@@ -3,7 +3,7 @@ const {validateEmail,validatePassword}=require("../validator/validator")
 const bcrypt=require("bcryptjs")
 
 const signUp=async function(req,res){
-    // try{
+    try{
         const body=req.body;
         const {name, email, password, role}=body;
         if(!name || !email || !password) return res.status(400).send({status:false,message:"email and name and password are mandatory"})
@@ -20,13 +20,9 @@ const signUp=async function(req,res){
             return res.status(400).send({ status: false, message: "Password Must be 8-15 length,consist of mixed character and special character" });
         }
         
-        // let pass=bcrypt.genSaltSync(8)
-        // let hashing=bcrypt.hashSync("password",pass)
         let hashing=bcrypt.hashSync("password",8)
         body.password=hashing;
-        
-
-
+       
         if(role){
             if (typeof role != "string") {
                 return res.status(400).send({ status: false, message: "role must be in string" });
@@ -38,9 +34,9 @@ const signUp=async function(req,res){
         }
         const signedEmp=await empModel.create(body)
         return res.status(201).send({status:true,data:signedEmp})
-    // }catch(err){
-    //     return res.status(500).send({status:false,message:err.message})
-    // }
+    }catch(err){
+        return res.status(500).send({status:false,message:err.message})
+    }
 }
 
 module.exports={signUp}
