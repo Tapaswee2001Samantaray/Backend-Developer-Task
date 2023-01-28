@@ -1,34 +1,39 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
-const empSchema=new mongoose.Schema(
+
+
+const employeeSchema = new mongoose.Schema(
     {
-        name:{
-            type: String,
-            required: true,
-            trim:true,
-            lowercase:true
+        name : {
+            type : String,
+            required : true,
+            trim : true,
+            lowercase : true
         },
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-            trim:true,
-            lowercase:true
+        email : {
+            type : String,
+            required : true,
+            unique : true,
+            trim : true,
+            lowercase : true
         },
-        password: {
-            type: String,
-            required: true,
-            trim:true,
+        password : {
+            type : String,
+            required : true,
+            trim : true,
         },
-        role: {
-            type: String,
-            required: true,
-            default: "Employee",
+        role : {
+            type : String,
+            required : true,
+            default : "Employee",
         },
-        isDeleted:{
-            type:Boolean,
-            default:false
+        isDeleted : {
+            type : Boolean,
+            default : false
         }
     }
 )
-module.exports=mongoose.model("Employee",empSchema)
+
+
+
+module.exports = mongoose.model("EmployeeData" , employeeSchema)
