@@ -59,26 +59,16 @@ const createCourse = async function (req, res) {
         }
         
 
-        if (releasedAt && typeof releasedAt != "string") {
-            return res.status(400).send({ status: false, message: "releasedAt must be in string" });
-        }
+        if(!duration) return res.status(400).send({ status: false, message: "duration must be present in body and can't be empty." })
 
-        if (!releasedAt || !releasedAt.trim()) {
-            return res.status(400).send({ status: false, message: "releasedAt must be present in body and can't be empty." });
-        }
 
-        let trimReleasedAt = releasedAt.trim();
+        const course = await courseModel.create(body);
 
-        if (moment(trimReleasedAt, "YYYY-MM-DD").format("YYYY-MM-DD") !== trimReleasedAt) {
-            return res.status(400).send({ status: false, message: "Please enter the Date in the format of 'YYYY-MM-DD'." });
-
-        }
-
-        const bookList = await bookModel.create(body);
-
-        res.status(201).send({ status: true, message: "Success", data: bookList });
+        res.status(201).send({ status: true, message: "Success", data:course});
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
+
+module.exports={createCourse}
 
