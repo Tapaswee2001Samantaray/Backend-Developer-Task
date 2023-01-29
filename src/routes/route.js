@@ -1,9 +1,10 @@
 const router = require("express").Router()
 const courseController = require( "../controller/courseController" )
-const {signUp}= require( "../controller/employeeController" )
+const {signUp,login}= require( "../controller/employeeController" )
 
 
 router.post("/register",signUp)
+router.post("/login",login)
 // router.get("/",employeeController)
 
 

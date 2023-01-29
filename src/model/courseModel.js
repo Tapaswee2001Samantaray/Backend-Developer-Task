@@ -16,7 +16,8 @@ const courseSchema = new mongoose.Schema(
         },
         videoUrl: {
             type: String,
-            trim: true
+            trim: true,
+            required:true
         },
         topics: [
             {
@@ -25,7 +26,8 @@ const courseSchema = new mongoose.Schema(
             }
         ],
         duration: {
-            type: Number
+            type: Number,
+            required:true
         },
         category: {
             type: String,
