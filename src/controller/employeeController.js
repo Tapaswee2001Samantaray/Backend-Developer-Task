@@ -80,7 +80,7 @@ const login = async function ( req , res ) {
             let token = jwt.sign({
                 empId: empData._id.toString(),
                 role:empData.role
-            }, 'project4grp14');
+            }, 'WeekendProjectByGroup-14');
 
             res.setHeader("x-api-key", token);
             res.status(200).send({ status: true, message: "Successfully Login.", data: { "token": token} });

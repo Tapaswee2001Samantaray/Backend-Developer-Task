@@ -42,6 +42,10 @@ const courseSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
+        approvedBy : {
+            type : ObjectId,
+            ref : "EmployeeData"
+        },
         isDeleted: {
             type: Boolean,
             default: false

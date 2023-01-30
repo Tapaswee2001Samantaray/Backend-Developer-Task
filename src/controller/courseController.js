@@ -1,4 +1,7 @@
 const courseModel = require("../model/courseModel")
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
+
 
 const createCourse = async function (req, res) {
     try {
@@ -54,21 +57,126 @@ const createCourse = async function (req, res) {
 
         category = category.trim();
 
-        if(topics){
-            if(topics.length==0) return res.status(400).send({ status: false, message: "topic can't be empty" });
+        if (topics) {
+            if (topics.length == 0) return res.status(400).send({ status: false, message: "topic can't be empty" });
         }
-        
 
-        if(!duration) return res.status(400).send({ status: false, message: "duration must be present in body and can't be empty." })
+
+        if (!duration) return res.status(400).send({ status: false, message: "duration must be present in body and can't be empty." })
 
 
         const course = await courseModel.create(body);
 
-        res.status(201).send({ status: true, message: "Success", data:course});
+        res.status(201).send({ status: true, message: "Success", data: course });
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
 
-module.exports={createCourse}
+
+
+
+const getCourse = async function (req, res) {
+    try {
+        let cousreId = req.param.cousreId
+
+        if (!ObjectId.isValid(cousreId)) {
+            return res.status(400).send({ status: false, message: "Course Id is incorrect." })
+        }
+
+        let isValid = await courseModel.findOne({ _id: cousreId })
+        if (!isValid) {
+            return res.status(404).send({ status: false, Message: "Course not found of this course Id" })
+        }
+
+        return res.status(200).send({ status: true, data: isValid })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+
+
+
+
+
+const updateCourse = async function (req, res) {
+    try {
+        let data = req.body;
+
+        let courseId = req.params.courseId;
+
+        if (Object.keys(data).length == 0) {
+            return res.status(400).send({ status: false, message: "Please provide some data for update." })
+        }
+
+        if (!ObjectId.isValid(courseId)) {
+            return res.status(400).send({ status: false, message: "Please provide valid course Id." })
+        }
+
+        if (req.token.role != "Admin") {
+            return res.status(403).send({ status: false, message: "Only Admins can update the course." })
+        }
+
+        let isvalidCousre = await courseModel.findOne({ _id: courseId, isDeleted: false })
+
+         if( !isvalidCousre.approved ) {
+            return res.status(403).send({ status : false , Message : " This course have no approval for update." })
+         }
+
+        if (!isvalidCousre) {
+            return es.status(404).send({ status: false, message: " Cousre is not exist with this Course Id." })
+        }
+
+        let updatedCourse = await courseModel.findOneAndUpdate(
+            { _id: courseId, isDeleted: false , approved : true },
+            { ...data , approved : false },
+            { new: true }
+        );
+        res.status(200).send({ status: true, message: "Update successfully", data: updatedCourse });
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
+}
+
+
+
+
+
+
+const deleteCourse = async function (req, res) {
+    try {
+        let courseId = req.params.courseId;
+
+        if (!ObjectId.isValid(courseId)) {
+            return res.status(400).send({ status: false, message: "Please provide valid course Id." })
+        }
+
+        if (req.token.role != "Admin") {
+            return res.status(403).send({ status: false, message: "Only Admins can update the course." })
+        }
+
+        let isvalidCousre = await courseModel.findOne({ _id: courseId, isDeleted: false })
+
+        if( !isvalidCousre.approved ) {
+            return res.status(403).send({ status : false , Message : " This course have no approval for delete." })
+         }
+
+        if (!isvalidCousre) {
+            return es.status(404).send({ status: false, message: " Cousre is not exist with this Course Id." })
+        }
+
+        const deleteCourse = await courseModel.findOneAndUpdate(
+            { _id: courseId, isDeleted: false },
+            { isDeleted: true , approved : false }
+        );
+
+        res.status(200).send({ status : true , message : "Deleted successfully." });
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
+}
+
+
+
+module.exports = { createCourse , getCourse , updateCourse , deleteCourse }
 
