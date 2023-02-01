@@ -5,6 +5,7 @@ const ObjectId = mongoose.Types.ObjectId
 
 const createCourse = async function (req, res) {
     try {
+        if(req.token.role !="Admin") return res.status(403).send({status:false,message:"Only Admin can create course"})
         let body = req.body;
         let { title, description, videoUrl, topics, duration, category } = body;
 
@@ -78,15 +79,24 @@ const createCourse = async function (req, res) {
 
 const getCourse = async function (req, res) {
     try {
+        
+        //return res.status(403).send({status:false,message:"Only Admin can create course"})
         let cousreId = req.param.cousreId
 
         if (!ObjectId.isValid(cousreId)) {
             return res.status(400).send({ status: false, message: "Course Id is incorrect." })
         }
 
-        let isValid = await courseModel.findOne({ _id: cousreId })
+
+        let isValid = await courseModel.findOne({ _id: cousreId,isDeleted:false})
         if (!isValid) {
             return res.status(404).send({ status: false, Message: "Course not found of this course Id" })
+        }
+
+        if(req.token.role =="Employee"){
+            if(! isValid.approved){
+                return res.status(403).send({status:false,message:"employee have to get approved the course by super admin"})
+            }
         }
 
         return res.status(200).send({ status: true, data: isValid })
@@ -101,6 +111,11 @@ const getCourse = async function (req, res) {
 
 const updateCourse = async function (req, res) {
     try {
+
+        if (req.token.role != "Admin") {
+            return res.status(403).send({ status: false, message: "Only Admins can update the course." })
+        }
+
         let data = req.body;
 
         let courseId = req.params.courseId;
@@ -111,10 +126,6 @@ const updateCourse = async function (req, res) {
 
         if (!ObjectId.isValid(courseId)) {
             return res.status(400).send({ status: false, message: "Please provide valid course Id." })
-        }
-
-        if (req.token.role != "Admin") {
-            return res.status(403).send({ status: false, message: "Only Admins can update the course." })
         }
 
         let isvalidCousre = await courseModel.findOne({ _id: courseId, isDeleted: false })
@@ -176,7 +187,35 @@ const deleteCourse = async function (req, res) {
     }
 }
 
+const approveCourse = async function( req , res ){
+    try {
+        let body = req.body.userId;
+
+        if(Object.keys(body).length == 0) {
+            return res.status(400).send({ status : false , message : "Please provide userId in body." })
+        }
+
+        if(req.token.role != "Super admin") {
+            return res.status(403).send({ status: false, message: "Only Super admins can approve."})
+        }
+        const courseId = req.params.courseId;
+        if(!isValidObjectId(courseId)) return res.status(400).send({status: false, message: "Please provide valid objectId."});
+
+        const isApproved=await courseModel.findOne({_id:courseId,isDeleted:false,approved:true})
+        if(isApproved) return res.status(400).send({status:false,message:"course is already approved"})
+
+        const course = await courseModel.findOneAndUpdate(
+            {_id: courseId, isDeleted: false},
+            { approved : true, approvedBy: req.token.id }
+        )
+
+        if(!course) return res.status(404).send({status: false, message: "Course not found."});
+        return res.status(200).send({status: false, message: "Course approved successfully."});
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
+}
 
 
-module.exports = { createCourse , getCourse , updateCourse , deleteCourse }
+module.exports = { createCourse , getCourse , updateCourse , deleteCourse ,approveCourse}
 

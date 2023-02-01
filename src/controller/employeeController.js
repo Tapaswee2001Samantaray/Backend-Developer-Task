@@ -74,7 +74,7 @@ const login = async function ( req , res ) {
 
             let hash=empData.password;
 
-            let isCorrect=bcrypt.compareSync(password,hash)
+            let isCorrect=bcrypt.compareSync("password",hash)
             if(! isCorrect) return res.status(400).send({status:false,message:"Password is incorrect"})
 
             let token = jwt.sign({
